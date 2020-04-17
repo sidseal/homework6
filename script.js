@@ -1,6 +1,3 @@
-$(document).ready(function () {
-    doTheThing()
-});
 //Variables//
 var $citySearched = $("#searchTerm");
 var $searchBtn = $("#searchBtn");
@@ -9,9 +6,21 @@ var $forecast = $("#forecastDiv");
 var $currentWeather = $("#currentWeather");
 const apiKey = "56f38c0b754d91b2d96d344a431e5dd4";
 
-var city = "austin"//stub for UI
+$(document).ready(function () {
 
-var queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
+    var cityHist = JSON.parse(localStorage.getItem("cities"))
+    console.log(typeof cityHist)
+    city = cityHist[cityHist.length - 1]
+
+    for (let i = 0; i < cityHist.length; i++) {
+        var thisCity = cityHist[i]
+        var cityCard = $('<div>').addClass("card").text(thisCity);
+        $cityList.prepend(cityCard);
+    }
+
+
+    doTheThing()
+});
 
 function changeTemp(kelvin) {
     let celciusTemp = Number(kelvin) - 273.15
@@ -19,22 +28,46 @@ function changeTemp(kelvin) {
     let farTemp = (celciusTemp * 9 / 5) + 32
     return farTemp;
 }
+$searchBtn.on("click", function () {
+    event.preventDefault();
+    // var city = $citySearched.val();
+
+
+    var cityCard = $('<div>').addClass("card").text($citySearched.val().toUpperCase());
+    $cityList.append(cityCard);
+    city = $citySearched.val()
+
+    var citiesSoFar = localStorage.getItem('cities')
+
+    if (!citiesSoFar) {
+        let stringOb = JSON.stringify([city])
+
+        localStorage.setItem('cities', stringOb)
+    } else {
+        let citiesArray = JSON.parse(citiesSoFar)
+        citiesArray.push(city)
+        localStorage.setItem('cities', JSON.stringify(citiesArray))
+    }
+
+
+
+
+    city = $citySearched.val()
+    doTheThing()
+})
 
 function doTheThing() {
+    var queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
 
     $.ajax({
         url: queryURL,
         method: "GET",
     }).then(function (response) {
-        console.log(response)
-        console.log(response.dt)
         let unixTime = response.dt
         var date = new Date(unixTime * 1000);
-        console.log(date)
-        console.log("kelvin", response.main.temp)
         let temp = changeTemp(response.main.temp)
         let $cardDiv = $("<div>").addClass("card")
-        $cardDiv.append($("<h5>").addClass('card-title').text(`${city} ${date.toDateString()}`))
+        $cardDiv.append($("<h5>").addClass('card-title').text(`${city.toUpperCase()}  ${date.toDateString()}`))
         let $cardBody = $("<div>").addClass("card-body")
         $cardDiv.append($cardBody)
 
@@ -57,7 +90,7 @@ function doTheThing() {
             $cardBody.append($uvIndex)
 
 
-            $currentWeather.append($cardDiv)
+            $currentWeather.html($cardDiv)
         })
     })
 
@@ -67,19 +100,14 @@ function doTheThing() {
         url: queryURLForecast,
         method: "GET",
     }).then(function (response) {
-        console.log(response)
         let $cardDiv = $("<div>").addClass("card")
-            $cardDiv.append($("<h5>").addClass('card-title').text(`5 Day Forecast:`))
-            let $cardBody = $("<div>").addClass("card-body").addClass("row")
-            $cardDiv.append($cardBody)
+        $cardDiv.append($("<h5>").addClass('card-title').text(`5 Day Forecast:`))
+        let $cardBody = $("<div>").addClass("card-body").addClass("row")
+        $cardDiv.append($cardBody)
         for (let i = 6; i < response.list.length; i += 8) {
-            //for(let i =7; i<response.list.length; i+=8)
-            console.log(i)
-            console.log(response.list[i])
-            console.log(response.list[i].dt_txt)
             let data = response.list[i]
             let $lcardDiv = $("<div>").addClass("card").addClass("col-2").addClass("bg-primary").addClass("mx-3")
-            $lcardDiv.append($("<h5>").addClass('card-title').text(data.dt_txt.slice(5,11)))
+            $lcardDiv.append($("<h5>").addClass('card-title').text(data.dt_txt.slice(5, 11)))
             let $lcardBody = $("<div>").addClass("card-body")
             $lcardDiv.append($lcardBody)
             $cardBody.append($lcardDiv)
@@ -87,15 +115,8 @@ function doTheThing() {
             $lcardBody.append($(`<p> Humidity: ${(data.main.humidity)}%</p>`))
 
 
-            //console.log()//maybe bring in moment to parse the data
+
         }
-        $forecast.append($cardDiv)
+        $forecast.html($cardDiv)
     })
-
 }
-
-
-
-
-
-

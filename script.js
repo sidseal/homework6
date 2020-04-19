@@ -85,7 +85,7 @@ function doTheThing() {
         let lat = response.coord.lat
         let lon = response.coord.lon
 
-        var queryURLUV = `http://api.openweathermap.org/data/2.5/uvi?appid=${apiKey}&lat=${lat}&lon=${lon}`
+        var queryURLUV = `https://api.openweathermap.org/data/2.5/uvi?appid=${apiKey}&lat=${lat}&lon=${lon}`
         $.ajax({
             url: queryURLUV,
             method: "GET",
@@ -98,7 +98,7 @@ function doTheThing() {
         })
     })
 
-    let queryURLForecast = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`
+    let queryURLForecast = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`
 
     $.ajax({
         url: queryURLForecast,

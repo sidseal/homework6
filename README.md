@@ -1,11 +1,1 @@
-# homework6
-//PsuedoCode//
-Create initial layout with minimal CSS and HTML(mostly jQuery(dynamically created))
-create form/input element for city(prevent default)(when button clicked, then function called)
-create JS variables for key and query format(AJAX call)
-prevent default(buttons)
-more console logS
-localStorage
-renderButtons()possibly to show list of cities
-~add list of cities
-~onClick for city list& icons
+For this project, we had to create  a weather dashboard. When given a city, the dashboard would show the current weather in the top right corner. The five day forecast for the city would be displayed underneath the current weather. The list of cities searched would also be stored in local storage and be displayed on the left section of the page.

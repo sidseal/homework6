@@ -16,6 +16,9 @@ $(document).ready(function () {
         var thisCity = cityHist[i]
         var cityCard = $('<div>').addClass("card").text(thisCity);
         $cityList.prepend(cityCard);
+        
+           
+        
     }
 
 
@@ -28,6 +31,7 @@ function changeTemp(kelvin) {
     let farTemp = (celciusTemp * 9 / 5) + 32
     return farTemp;
 }
+
 $searchBtn.on("click", function () {
     event.preventDefault();
     // var city = $citySearched.val();
@@ -119,4 +123,5 @@ function doTheThing() {
         }
         $forecast.html($cardDiv)
     })
+ 
 }
